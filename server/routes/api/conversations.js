@@ -49,6 +49,7 @@ router.get("/", async (req, res, next) => {
 
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
+      convo.messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
       const convoJSON = convo.toJSON();
 
       // set a property "otherUser" so that frontend will have easier access
