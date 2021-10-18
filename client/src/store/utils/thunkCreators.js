@@ -1,6 +1,12 @@
 import axios from "axios";
 import socket from "../../socket";
-import { gotConversations, addConversation, setNewMessage, setSearchedUsers } from "../conversations";
+import {
+  gotConversations,
+  addConversation,
+  setNewMessage,
+  setSearchedUsers,
+  setUpdatedMessage,
+} from "../conversations";
 import { gotUser, setFetchingStatus } from "../user";
 
 axios.interceptors.request.use(async function (config) {
@@ -85,7 +91,9 @@ const sendMessage = (data, body) => {
     sender: data.sender,
   });
 };
-
+const sendUpdatedMessage = (message) => {
+  socket.emit("update-message", { ...message });
+};
 // message format to send: {recipientId, text, conversationId}
 // conversationId will be set to null if its a brand new conversation
 export const postMessage = (body) => async (dispatch) => {
@@ -108,6 +116,20 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
   try {
     const { data } = await axios.get(`/api/users/${searchTerm}`);
     dispatch(setSearchedUsers(data));
+  } catch (error) {
+    console.error(error);
+  }
+};
+const updateMessage = async (message) => {
+  await axios.put(`/api/messages/${message.id}`, message);
+};
+
+export const putMessage = (message) => async (dispatch) => {
+  try {
+    message.isSeen = true;
+    await updateMessage(message);
+    dispatch(setUpdatedMessage(message));
+    sendUpdatedMessage(message);
   } catch (error) {
     console.error(error);
   }
