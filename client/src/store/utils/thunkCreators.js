@@ -120,14 +120,11 @@ export const searchUsers = (searchTerm) => async (dispatch) => {
     console.error(error);
   }
 };
-const updateMessage = async (message) => {
-  await axios.put(`/api/messages/${message.id}`, message);
-};
+
 
 export const putMessage = (message) => async (dispatch) => {
   try {
     message.isSeen = true;
-    await updateMessage(message);
     dispatch(setUpdatedMessage(message));
     sendUpdatedMessage(message);
   } catch (error) {

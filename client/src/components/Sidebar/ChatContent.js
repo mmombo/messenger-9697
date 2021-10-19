@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
 import ChatNotification from "./ChatNotification";
 import { calcNumUnread } from "../utils/helperFunctions";
+import { useEffect, useState } from "react";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,8 +39,11 @@ const ChatContent = (props) => {
 
   const { conversation } = props;
   const { latestMessageText, otherUser } = conversation;
+  const [numUnread, setNumUnread] = useState(0);
 
-  const numUnread = calcNumUnread(conversation.messages, conversation.otherUser.id);
+  useEffect(() => {
+    setNumUnread(calcNumUnread(conversation.messages, conversation.otherUser.id));
+  }, [conversation]);
 
   return (
     <Box className={classes.root}>

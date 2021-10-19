@@ -1,3 +1,10 @@
+import { tagLastMessage } from "../../components/utils/helperFunctions";
+import axios from "axios";
+
+const updateMessage = async (message) => {
+  await axios.put(`/api/messages/read-status/${message.id}`, message);
+};
+
 export const addMessageToStore = (state, payload) => {
   const { message, sender } = payload;
   // if sender isn't null, that means the message needs to be put in a brand new convo
@@ -16,6 +23,9 @@ export const addMessageToStore = (state, payload) => {
       const convoCopy = { ...convo };
       convoCopy.messages.push(message);
       convoCopy.latestMessageText = message.text;
+
+      tagLastMessage(convoCopy.messages, convoCopy.otherUser.id);
+
       return convoCopy;
     } else {
       return convo;
@@ -83,17 +93,23 @@ export const addNewConvoToStore = (state, recipientId, message) => {
 
 export const addUpdatedMessageToStore = (state, payload) => {
   const { message } = payload;
-  // if sender isn't null, that means the message needs to be put in a brand new convo
+
   return state.map((convo) => {
     if (convo.id === message.conversationId) {
       const convoCopy = { ...convo };
-      let newMessage = {};
-      convoCopy.messages = convoCopy.messages.map((oldMessage) => {
-        if (oldMessage.id === message.id) {
-          newMessage = message;
-          return newMessage;
-        } else return oldMessage;
-      });
+
+      for (let i = convoCopy.messages.length - 1; i >= 0; i--) {
+        if (convoCopy.messages[i].id === message.id) {
+          convoCopy.messages[i] = { ...message };
+          if (convoCopy.otherUser.id !== convoCopy.messages[i].senderId) {
+            updateMessage(message);
+          }
+          break;
+        }
+      }
+
+      // if (convoCopy.otherUser.id !== )
+      tagLastMessage(convoCopy.messages, convoCopy.otherUser.id);
       return convoCopy;
     } else {
       return convo;

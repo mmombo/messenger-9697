@@ -40,11 +40,12 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
-router.put("/:id", async (req, res, next) => {
+router.put("/read-status/:id", async (req, res, next) => {
   try {
-    if (!req.user) {
+    if (!req.user || req.user.dataValues.id !== req.body.senderId) {
       return res.sendStatus(401);
     }
+
     const { id } = req.params;
     const { isSeen } = req.body;
 

@@ -4,20 +4,22 @@ import { SenderBubble, OtherUserBubble } from "../ActiveChat";
 import moment from "moment";
 import { connect } from "react-redux";
 import { putMessage } from "../../store/utils/thunkCreators";
-import { tagLastMessage } from "../utils/helperFunctions";
+import { useEffect } from "react";
 
 const Messages = (props) => {
   const { otherUser, userId, putMessage } = props;
 
   const messages = props.conversation.messages;
-  tagLastMessage(messages, userId);
-  
-  
-   for (var i = messages.length - 1; i >= 0; i--) {
-     if (messages[i].senderId !== userId && messages[i].isSeen === false) {
-       putMessage(messages[i]);
-     } else break;
-   }
+
+  useEffect(() => {
+    if (messages[messages.length - 1].senderId !== userId && messages[messages.length - 1].isSeen === false) {
+      for (let i = messages.length - 1; i >= 0; i--) {
+        if (messages[i].senderId !== userId && messages[i].isSeen === false) {
+          putMessage(messages[i]);
+        } else break;
+      }
+    }
+  });
 
   return (
     <Box>
