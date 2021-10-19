@@ -12,7 +12,11 @@ const Messages = (props) => {
   const messages = props.conversation.messages;
 
   useEffect(() => {
-    if (messages[messages.length - 1].senderId !== userId && messages[messages.length - 1].isSeen === false) {
+    if (
+      messages.length > 0 &&
+      messages[messages.length - 1].senderId !== userId &&
+      messages[messages.length - 1].isSeen === false
+    ) {
       for (let i = messages.length - 1; i >= 0; i--) {
         if (messages[i].senderId !== userId && messages[i].isSeen === false) {
           putMessage(messages[i]);
