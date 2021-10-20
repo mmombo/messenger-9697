@@ -58,7 +58,7 @@ router.put("/read-status/:id", async (req, res, next) => {
       }
     );
 
-    res.json({ message });
+    res.sendStatus(204);
   } catch (error) {
     next(error);
   }

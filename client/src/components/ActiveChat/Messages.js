@@ -7,9 +7,12 @@ import { putMessage } from "../../store/utils/thunkCreators";
 import { useEffect } from "react";
 
 const Messages = (props) => {
-  const { otherUser, userId, putMessage } = props;
-
-  const messages = props.conversation.messages;
+  const {
+    otherUser,
+    userId,
+    putMessage,
+    conversation: { messages },
+  } = props;
 
   useEffect(() => {
     if (
@@ -23,7 +26,7 @@ const Messages = (props) => {
         } else break;
       }
     }
-  });
+  }, [messages, putMessage, userId]);
 
   return (
     <Box>
