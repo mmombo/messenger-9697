@@ -1,8 +1,7 @@
 import React from "react";
-import { Box, Typography } from "@material-ui/core";
+import { Box, Typography, Badge } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import ChatNotification from "./ChatNotification";
 import { calcNumUnread } from "../utils/helperFunctions";
 import { useEffect, useState } from "react";
 
@@ -22,15 +21,10 @@ const useStyles = makeStyles((theme) => ({
     color: "#9CADC8",
     letterSpacing: -0.17,
   },
-  notificationBadge: {
-    background: "#3A8DFF",
-    fontSize: 11,
-    color: "white",
-    borderRadius: 15,
-    padding: "5px 9px",
+  badge: {
     marginTop: "auto",
     marginBottom: "auto",
-    fontWeight: "bold",
+    marginRight: "20%",
   },
 }));
 
@@ -51,7 +45,7 @@ const ChatContent = (props) => {
         <Typography className={classes.username}>{otherUser.username}</Typography>
         <Typography className={classes.previewText}>{latestMessageText}</Typography>
       </Box>
-      <ChatNotification numUnread={numUnread} />
+      <Badge badgeContent={numUnread} className={classes.badge} color="primary" />
     </Box>
   );
 };
