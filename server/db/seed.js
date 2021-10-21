@@ -11,8 +11,7 @@ async function seed() {
     username: "thomas",
     email: "thomas@email.com",
     password: "123456",
-    photoUrl:
-      "https://res.cloudinary.com/dmlvthmqr/image/upload/v1607914467/messenger/thomas_kwzerk.png",
+    photoUrl: "https://res.cloudinary.com/dmlvthmqr/image/upload/v1607914467/messenger/thomas_kwzerk.png",
   });
 
   const santiago = await User.create({
@@ -32,16 +31,19 @@ async function seed() {
     conversationId: santaigoConvo.id,
     senderId: santiago.id,
     text: "Where are you from?",
+    isSeen: false,
   });
   await Message.create({
     conversationId: santaigoConvo.id,
     senderId: thomas.id,
     text: "I'm from New York",
+    isSeen: false,
   });
   await Message.create({
     conversationId: santaigoConvo.id,
     senderId: santiago.id,
     text: "Share photo of your city, please",
+    isSeen: false,
   });
 
   const chiumbo = await User.create({
@@ -59,6 +61,7 @@ async function seed() {
     conversationId: chiumboConvo.id,
     senderId: chiumbo.id,
     text: "Sure! What time?",
+    isSeen: false,
   });
 
   const hualing = await User.create({
@@ -78,6 +81,7 @@ async function seed() {
       conversationId: hualingConvo.id,
       senderId: hualing.id,
       text: "a test message",
+      isSeen: false,
     });
   }
 
@@ -85,6 +89,7 @@ async function seed() {
     conversationId: hualingConvo.id,
     senderId: hualing.id,
     text: "😂 😂 😂",
+    isSeen: false,
   });
 
   const otherUsers = await Promise.all([

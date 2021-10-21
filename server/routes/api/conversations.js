@@ -3,6 +3,23 @@ const { User, Conversation, Message } = require("../../db/models");
 const { Op } = require("sequelize");
 const onlineUsers = require("../../onlineUsers");
 
+const tagLastMessage = (messages, otherUserId) => {
+  for (let i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].senderId !== otherUserId && messages[i].isLast === true) {
+      messages[i].isLast = false;
+      break;
+    }
+  }
+  for (let i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].senderId !== otherUserId && messages[i].isSeen === true) {
+      let newMessage = { ...messages[i] };
+      newMessage.isLast = true;
+      messages[i] = newMessage;
+      break;
+    }
+  }
+};
+
 // get all conversations for a user, include latest message text for preview, and all messages
 // include other user model so we have info on username/profile pic (don't include current user info)
 router.get("/", async (req, res, next) => {
@@ -50,6 +67,7 @@ router.get("/", async (req, res, next) => {
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
       convo.messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
       const convoJSON = convo.toJSON();
 
       // set a property "otherUser" so that frontend will have easier access
@@ -61,6 +79,9 @@ router.get("/", async (req, res, next) => {
         delete convoJSON.user2;
       }
 
+      //set property "isLast" on the last message sent by user1
+      tagLastMessage(convoJSON.messages, convoJSON.otherUser.id);
+
       // set property for online status of the other user
       if (onlineUsers.includes(convoJSON.otherUser.id)) {
         convoJSON.otherUser.online = true;
@@ -69,7 +90,7 @@ router.get("/", async (req, res, next) => {
       }
 
       // set properties for notification count and latest message preview
-      convoJSON.latestMessageText = convoJSON.messages[0].text;
+      convoJSON.latestMessageText = convoJSON.messages[convoJSON.messages.length - 1].text;
       conversations[i] = convoJSON;
     }
 

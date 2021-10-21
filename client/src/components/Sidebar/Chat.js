@@ -36,7 +36,7 @@ const Chat = (props) => {
         online={otherUser.online}
         sidebar={true}
       />
-      <ChatContent conversation={conversation} />
+      <ChatContent convoId={conversation.id} />
     </Box>
   );
 };
