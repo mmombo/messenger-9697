@@ -26,7 +26,7 @@ const Messages = (props) => {
         } else break;
       }
     }
-  }, [messages, putMessage, userId]);
+  });
 
   return (
     <Box>
